@@ -33,3 +33,9 @@ jobs:
     - name: Push Docker image to Docker Hub with latest tag
       run: docker push mavhub/stablediffusion:latest
       
+    - name: Download file with API key authentication
+      run: |
+        wget --verbose \
+             --header="Authorization: Bearer ${{ secrets.API_KEY }}" \
+             https://civitai.com/api/download/models/511677 \
+             -O /stable-diffusion-webui/models/Lora/maveverclear.safetensors
