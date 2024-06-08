@@ -18,8 +18,8 @@ jobs:
       id: vars
       run: echo "IMAGE_TAG=$(date +%s)" >> $GITHUB_ENV
 
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag mavhub/stablediffusion:${{ env.IMAGE_TAG }}
+    - name: Build the Docker image with token
+      run: docker build --build-arg TOKEN=${{ secrets.TOKEN }} . --file Dockerfile --tag mavhub/stablediffusion:${{ env.IMAGE_TAG }}
 
     - name: Tag image as latest
       run: docker tag mavhub/stablediffusion:${{ env.IMAGE_TAG }} mavhub/stablediffusion:latest
@@ -32,4 +32,3 @@ jobs:
 
     - name: Push Docker image to Docker Hub with latest tag
       run: docker push mavhub/stablediffusion:latest
-      
