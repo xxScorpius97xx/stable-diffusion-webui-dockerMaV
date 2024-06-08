@@ -19,8 +19,9 @@ RUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git && \
 # Add entrypoint script
 ADD entrypoint.sh /stable-diffusion-webui
 
-# Download model file
-RUN wget https://civitai.com/api/download/models/511677 -O /stable-diffusion-webui/models/Lora/maveverclear.safetensors
+# Download model file with authentication credentials from environment variable
+ARG TOKEN
+RUN wget "https://civitai.com/api/download/models/511677?token=$TOKEN" -O /stable-diffusion-webui/models/Lora/maveverclear.safetensors
 
 # Set permissions and switch user
 RUN chmod 777 -R /stable-diffusion-webui /home/fcb && \
