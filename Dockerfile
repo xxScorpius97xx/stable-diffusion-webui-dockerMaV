@@ -1,38 +1,29 @@
 FROM python:3.9
 
-# Set up necessary packages and user
-RUN DEBIAN_FRONTEND=noninteractive && \
-    apt update && \
-    apt install tzdata wget git ffmpeg libsm6 libxext6 -y && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    useradd -s /bin/bash -m fcb
+RUN DEBIAN_FRONTEND=noninteractive && apt update && apt install tzdata wget git ffmpeg libsm6 libxext6 -y && apt-get clean && useradd -s /bin/bash -m  fcb 
 
-# Clone the specific commit of the repository and set up directories
-RUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git && \
-    cd stable-diffusion-webui && \
-    git pull && \
-    git fetch && \
-    git checkout 4afaaf8a020c1df457bcf7250cb1c7f609699fa7 && \
-    mkdir -p /stable-diffusion-webui/models/Lora
+#RUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git && mkdir /stable-diffusion-webui/models/Lora
+RUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git && cd stable-diffusion-webui && git pull && git fetch && git checkout 4afaaf8a020c1df457bcf7250cb1c7f609699fa7 && mkdir /stable-diffusion-webui/models/Lora
 
-# Add entrypoint script
 ADD entrypoint.sh /stable-diffusion-webui
 
-# Download model file with authentication credentials from environment variable
+##################################### Add your LoRA models here ###########################################
+### Add your LoRA models here, 
+### You need to replace the <model_download_link> and <your_model_name>, then add the command to the below
+### Command example: 
+###                             RUN wget <model_download_link> -O /stable-diffusion-webui/models/Lora/<your_model_name>
+
 ARG TOKEN
 RUN wget https://civitai.com/api/download/models/511677?token=$TOKEN -O /stable-diffusion-webui/models/Lora/maveverclear.safetensors
 
-# Set permissions and switch user
-RUN chmod 777 -R /stable-diffusion-webui /home/fcb && \
-    chown -R fcb:fcb /stable-diffusion-webui
-
+#######################################################################################################
+RUN chmod 777 -R stable-diffusion-webui /home/fcb && chown -R fcb:fcb stable-diffusion-webui
 USER fcb
+
 WORKDIR /stable-diffusion-webui
 
-# Define environment variables
 ENV COMMANDLINE_ARGS="--listen --port=9999 --enable-insecure-extension-access --api"
 
-# Expose port and set entrypoint
 EXPOSE 9999
+
 ENTRYPOINT ["bash", "entrypoint.sh"]
