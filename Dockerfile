@@ -14,8 +14,7 @@ ADD entrypoint.sh /stable-diffusion-webui
 ###                             RUN wget <model_download_link> -O /stable-diffusion-webui/models/Lora/<your_model_name>
 
 ARG TOKEN
-RUN wget https://civitai.com/api/download/models/176425 -O /stable-diffusion-webui/models/Lora/mav_majicmixRealistic_v7.safetensors
-
+RUN wget https://civitai.com/api/download/models/511677?token=$TOKEN -O /stable-diffusion-webui/models/Lora/maveverclear.safetensors
 
 #######################################################################################################
 RUN chmod 777 -R stable-diffusion-webui /home/fcb && chown -R fcb:fcb stable-diffusion-webui
